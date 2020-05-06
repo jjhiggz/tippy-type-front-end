@@ -1,26 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import AllWordContainer from './containers/AllWordContainer'
+import TopicMenu from './containers/TopicMenu'
+import ThemeBox from './containers/ThemeBox'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component{
+  state = {
+    words: [],
+    topic: [],
+  }
+
+sample = (array) => {
+  return array[Math.floor ( Math.random() * array.length )]
+}
+getWords = (topic) => {
+  fetch('http://localhost:9000/topics')
+    .then(response => response.json())
+    .then(topics => this.findTopic(topic,topics))
 }
 
-export default App;
+findTopic = ( topicName, topicsArray ) => {
+  const topicObject = topicsArray.find( top => {
+    return top.name === topicName
+  })
+  const {name, words} = topicObject
+  this.createGameWords(JSON.parse(words))
+  this.setState({ topic: name })
+}
+
+createGameWords(words){
+  let newWords = []
+  for(let i=0; i < 300; i++){
+    newWords.push(this.sample(words))
+  }
+
+  newWords = newWords
+    .join(' ')
+    .split(' ')
+    .filter(term => term !== '')
+  this.setState({words: newWords})
+}
+
+render(){
+ const  { getWords } = this
+ const { words } = this.state
+  return(
+    <>
+      <ThemeBox/>
+      < TopicMenu 
+          getWords = { getWords }
+      />
+    
+      <AllWordContainer
+        words = { words }
+      />
+    </>
+  )}
+}

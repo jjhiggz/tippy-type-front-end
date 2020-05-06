@@ -1,0 +1,64 @@
+#words {
+  /* border: 1px solid black;
+  width: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  display:flex;
+  flex-direction:row;
+  justify-content: flex-start; */
+  /* display:block; */
+}
+.left-words{
+  min-width: 40%;
+  max-width: 40%;
+  color: #6174b4;
+  float: left;
+  overflow: hidden;
+  direction: rtl;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.current-word{
+  color: #6174b4;
+  max-width:9%;
+  float: left;
+  overflow: hidden;
+  direction: rtl;
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 10px;
+}
+.right-words{
+  max-width: 50%;
+  min-width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  width:5000px;
+  text-align: left;
+  float:right;
+}
+/* .current-word{
+  height: 100px;
+  color: #6174b4;
+  float: left;
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 10px;
+} */
+.left-words, .right-words, .current-word{
+  height: inherit;
+    line-height: 4.5em;
+    height: 100px;
+    font-family: Merriweather;
+    text-rendering: optimizeLegibility;
+    font-weight: 100;
+    font-size: 1.9em;
+    border: 0;
+    outline: 0;
+    vertical-align: middle;
+}
+/* .current-word{
+
+} */
+
