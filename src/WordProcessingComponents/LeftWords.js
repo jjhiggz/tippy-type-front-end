@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function LeftWords({words}){
+export default function LeftWords({words, changeFocus}){
   const fillWords = (words) => {
     return  words.map(word => {
        return(
@@ -11,6 +11,7 @@ export default function LeftWords({words}){
    return (
      <p
        className="left-words"
+       onClick={changeFocus}
      >
        {fillWords(words)}
      </p>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function RightWords({words}){
+export default function RightWords({words, changeFocus}){
   const fillWords = (words) => {
    return  words.map(word => {
       return(
@@ -11,6 +11,7 @@ export default function RightWords({words}){
   return (
     <p
       className="right-words"
+      onClick = {changeFocus}
     >
       {fillWords(words)}
     </p>

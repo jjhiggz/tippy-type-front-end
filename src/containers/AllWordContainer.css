@@ -9,46 +9,33 @@
   /* display:block; */
 }
 input{
- width:0px;
+ width:20px;
+ opacity:0%;
 }
 .left-words{
-  min-width: 40%;
-  max-width: 40%;
+  min-width: 49%;
+  max-width: 49%;
   color: #6174b4;
   float: left;
   overflow: hidden;
   direction: rtl;
   text-align: right;
   white-space: nowrap;
+  padding-right: 0px;
+  margin-right:0px;
 }
 
-.current-word{
-  color: #6174b4;
-  max-width:9%;
-  float: left;
-  overflow: hidden;
-  direction: rtl;
-  text-align: right;
-  white-space: nowrap;
-  padding-left: 10px;
-}
 .right-words{
   max-width: 50%;
   min-width: 50%;
   overflow: hidden;
   white-space: nowrap;
-  width:5000px;
   text-align: left;
   float:right;
+  padding-left: 0px;
+  margin-left:0px;
 }
-/* .current-word{
-  height: 100px;
-  color: #6174b4;
-  float: left;
-  text-align: right;
-  white-space: nowrap;
-  padding-left: 10px;
-} */
+
 .left-words, .right-words, .current-word{
   height: inherit;
     line-height: 4.5em;

@@ -16,109 +16,154 @@ export default class AllWordContainer extends React.Component{
     currentInput: '',
     currentInputCharacter: '',
     currentCharacter: '',
+    characterCount:1,
     correctWordCount: 0,
     incorrectWordCount: 0,
     completedWordCount: 0,
   }
-
+incrementState = (stateKey) => {
+  this.setState({[stateKey]:this.state[stateKey]+1})
+}
+resetState = ( stateKey, defaultValue = 0 ) => {
+  this.setState({[stateKey]: defaultValue})
+}
 //lifecycle methods
   componentDidUpdate(prevProps){
     if(this.props.words !== prevProps.words){
       this.setState( { words: this.props.words })
       this.populateGameWords(this.props.words)
-
+      this.changeFocusToInput()
     }
   }
-  
+//populates Game Words
   populateGameWords = (words) => {
-    this.setState({ currentWord: words[0] })
-    const newWords = words
-    words.shift()
-    this.setState({incompletedWords:newWords})
+    this.setState({incompletedWords:words})
+    this.setState({currentWord:words[0]})
   }
-
+// gets last character of a string
   getLastCharacter = (string) => {
     return string.charAt( string.length - 1 )
   }
 
-  //state functions
-  statePush = ( stateKey, newTerm ) => {
-    this.setState( { [stateKey]: [ ...this.state[stateKey], newTerm]} )
-  }
-
-  stateShift = ( stateKey ) => {
-    let newStateValue = this.state[stateKey]
-    newStateValue.shift()
-    this.setState({ [stateKey]: newStateValue })  
-  }
-
-  stateIncrement = ( stateKey ) => {
-    this.setState( { [stateKey]: this.state[stateKey] + 1})
-  }
-
-// game functions
-
-  //this function will track the state of input box
-
   handleInputChange = (event) => {
     let input = event.target.value
+    this.setState({currentInput: input})
     const currentCharacter = this.getLastCharacter(input)
+    this.setState({characterCount:input.split('').length})
     if( currentCharacter === ' ' ){
-      event.target.value = ''
-      this.setState( {currentWord: this.state.incompletedWords[0]})
-      this.setState( {nextWord: this.state.incompletedWords[1]})
-      const wordObject = () => this.generateWordObject(input.trim())
-      this.stateShift('incompletedWords')
-      this.statePush('completedWords', wordObject())
-      this.incrementWordCounts(wordObject())
-      //update counts
-    }
-
-    this.setState({ currentInput: input })
-
-  }
-
-  incrementWordCounts = (wordObject) => {
- 
-    if( wordObject.className === 'correct'){
-      this.stateIncrement('correctWordCount')
+      this.handleSpace()
     }
     else{
-      this.stateIncrement('incorrectWordCount')
+      this.handleCharacter()
     }
-      this.stateIncrement('completedWordCount')
+  }
+  handleSpace = () => {
+    console.log('handling space')
+    if(this.state.characterCount !== 0){
+      const newWord = this.state.currentInput.trim()
+      const newWordObj = this.generateCompletedWordObject(newWord)
+      const existingCompletedWords = this.state.completedWords
+      existingCompletedWords.push(newWordObj)
+      this.setState({completedWords: existingCompletedWords})
+      this.setState({currentInput:''})
+      this.nextWord()
+      this.incrementStateCounts()
+    }
+    else{
+      this.setState({currentInput:''})
+    }
   }
 
-  generateWordObject = (input) => {
+  nextWord = () => {
+    let incompleteWords = this.state.incompletedWords
+    incompleteWords.shift()
+    this.setState({incompletedWords: incompleteWords})
+    this.setState({currentWord: incompleteWords[0]})
+  }
+
+  incrementStateCounts = () => {
+    const {currentInput, currentWord} = this.state
+    if(currentInput.trim() !== currentWord){
+      this.incrementState('incorrectWordCount')
+    }
+    else{
+      this.incrementState('correctWordCount')
+    }
+    this.incrementState('completedWordCount')
+    this.resetState('characterCount')
+
+  }
+
+  handleCharacter = () => {
+
+
+  }
+
+  // generatePartialObjects = (input) => {
+  //   const splitWord = this.state.currentWord
+  //   const splitInput = this.state.currentInput
+  //   const indexLastCorrectCharacter = this.indexLastCorrectCharacter(splitInput, splitWord)
+    
+  //   const returnObject = indexLastCorrectCharacter !== 'all-correct' ? 
+  //    {
+  //     left:{
+  //       text: input,
+  //       className: "incorrect"
+  //     },
+  //     right:{
+  //       text: input,
+  //       className: "incomplete"
+  //     },
+
+  //    }
+  // }
+
+  indexLastCorrectCharacter = (splitInput, splitWord) => {
+    for(let i=0 ; i < splitInput.length; i++){
+      if( splitInput[i] != splitWord[i] ){
+        return i
+      }
+    }
+    return 'all-correct'
+}
+
+adjustRightShift = ( index, splitWord , splitInput) => {
+  if(index == 'all-correct' && splitInput.length <= splitWord.length){
+    return splitWord.slice( splitInput.length ,splitWord.length )}
+  else if( splitInput.length > splitWord.length){
+    return []
+    }
+    else if( index !== 'all-correct' ){ 
+      return splitWord.slice(index-1, splitWord.length)
+    }
+}
+
+isInputEqual = ( currentArray, inputArray ) => {
+
+  if( inputArray.length  > currentArray.length ){
+    return false
+  }
+  else if( inputArray.join('') !== currentArray.slice(0,inputArray.length).join('')){
+    return false
+  }
+  else {
+    return true
+  }
+}
+  generateCompletedWordObject = (input) => {
     return {
       text: input,
       className: input === this.state.currentWord ? "correct" : "incorrect"
-     }
+    }
   }
   
   
   inputElement = React.createRef()
 
   changeFocusToInput = () => {
-    console.log('fuck')
     this.inputElement.current.focus();
   }
 
-  log = ()=> {
-    console.log('fuck you')
-  }
-
-  handleCurrentWord = (currentWord, input) => {
-  let splitWord = currentWord.split('')
-  const splitInput = input.split('')
-  const indexOfFirstWrong = this.indexLastCorrectCharacter(splitInput, splitWord)
-  const assignCorrect = this.isInputEqual( splitWord, splitInput ) ? "correct" : "incorrect"
-  splitWord = this.adjustRightShift(indexOfFirstWrong, splitWord, splitInput)
-  
-  let rightside = splitWord.map( letter => <span className="incomplete" >{letter}</span> )
-  let leftside = splitInput.map( letter => <span className={ assignCorrect}>{letter}</span>)
-  return( <> {leftside}{rightside} </> )
-}
   render(){
     // destructuring state
     const {
@@ -136,28 +181,21 @@ export default class AllWordContainer extends React.Component{
     } = this
     return (
       <section id="words">
+        <input
+          id='input-form'
+          value = {this.state.currentInput}
+          onChange = { handleInputChange }
+          ref = { this.inputElement }
+        />
         <LeftWords
           words = { completedWords }  
           onClick = { this.changeFocusToInput }
-        />
-        <input
-          id='input-form'
-          onChange = { handleInputChange }
-          ref={this.inputElement}
-          
-        />
-        <CurrentWord
-          currentInput = { currentInput }
-          currentWord = { currentWord }
-          updateAppStringState = { updateAppStringState }
-          onClick = { this.changeFocusToInput }
-
+          changeFocus = { this.changeFocusToInput } 
         />
         <RightWords
           words = { incompletedWords }
-          onClick = { this.changeFocusToInput }
+          changeFocus = { this.changeFocusToInput }
         />
-        <button onClick = { this.changeFocusToInput }>push me</button>
       </section>
     );
   }

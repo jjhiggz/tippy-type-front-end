@@ -1,5 +1,21 @@
+section{
+  position: relative;
+  text-align: center;
+}
+h1{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 10px 10px black ;
+}
 img{
   object-fit: cover;
   width: 2000px;
   height:300px;
 }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Lemonada:wght@700&display=swap');
