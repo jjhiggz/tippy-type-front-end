@@ -20,6 +20,7 @@ export default class AllWordContainer extends React.Component{
     incorrectWordCount: 0,
     completedWordCount: 0,
   }
+
 //lifecycle methods
   componentDidUpdate(prevProps){
     if(this.props.words !== prevProps.words){
@@ -28,10 +29,9 @@ export default class AllWordContainer extends React.Component{
 
     }
   }
-
+  
   populateGameWords = (words) => {
     this.setState({ currentWord: words[0] })
-    this.setState({ nextWord: words[1] })
     const newWords = words
     words.shift()
     this.setState({incompletedWords:newWords})
@@ -59,9 +59,6 @@ export default class AllWordContainer extends React.Component{
 // game functions
 
   //this function will track the state of input box
-  updateCurrentInput = (input) => {
-    this.setState( { currentInput: input})
-  }
 
   handleInputChange = (event) => {
     let input = event.target.value
@@ -98,13 +95,30 @@ export default class AllWordContainer extends React.Component{
       className: input === this.state.currentWord ? "correct" : "incorrect"
      }
   }
+  
+  
+  inputElement = React.createRef()
 
   changeFocusToInput = () => {
-
+    console.log('fuck')
+    this.inputElement.current.focus();
   }
 
+  log = ()=> {
+    console.log('fuck you')
+  }
 
+  handleCurrentWord = (currentWord, input) => {
+  let splitWord = currentWord.split('')
+  const splitInput = input.split('')
+  const indexOfFirstWrong = this.indexLastCorrectCharacter(splitInput, splitWord)
+  const assignCorrect = this.isInputEqual( splitWord, splitInput ) ? "correct" : "incorrect"
+  splitWord = this.adjustRightShift(indexOfFirstWrong, splitWord, splitInput)
   
+  let rightside = splitWord.map( letter => <span className="incomplete" >{letter}</span> )
+  let leftside = splitInput.map( letter => <span className={ assignCorrect}>{letter}</span>)
+  return( <> {leftside}{rightside} </> )
+}
   render(){
     // destructuring state
     const {
@@ -118,28 +132,32 @@ export default class AllWordContainer extends React.Component{
     const {
       updateAppStringState,
       handleInputChange,
-      changeFocusToInput,
+      
     } = this
     return (
       <section id="words">
         <LeftWords
           words = { completedWords }  
-          onClick = { changeFocusToInput }
+          onClick = { this.changeFocusToInput }
         />
         <input
           id='input-form'
           onChange = { handleInputChange }
+          ref={this.inputElement}
+          
         />
         <CurrentWord
           currentInput = { currentInput }
           currentWord = { currentWord }
           updateAppStringState = { updateAppStringState }
-          onClick = { changeFocusToInput }
+          onClick = { this.changeFocusToInput }
+
         />
         <RightWords
           words = { incompletedWords }
-          onClick = { changeFocusToInput }
+          onClick = { this.changeFocusToInput }
         />
+        <button onClick = { this.changeFocusToInput }>push me</button>
       </section>
     );
   }
